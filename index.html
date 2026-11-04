@@ -54,7 +54,6 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .done h2{color:var(--navy);margin:0 0 6px}
 .done .again{margin-top:18px;font:inherit;font-weight:700;padding:12px 22px;border-radius:10px;border:0;background:var(--teal);color:#fff;cursor:pointer}
 footer{text-align:center;margin-top:28px;font-size:.85rem;color:var(--muted)}
-footer button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;padding:7px 12px;cursor:pointer;margin-top:8px}
 .hint{font-size:.82rem;color:var(--muted);margin-top:4px}
 .hidden{display:none!important}
 </style>
@@ -95,7 +94,6 @@ footer button{font:inherit;font-size:.85rem;border:1px solid var(--line);backgro
 
  <footer>
    دائرة التخطيط والتنظيم الصحي — المديرية العامة للخدمات الصحية بمحافظة شمال الشرقية
-   <br><button type="button" id="xlsBtn">⬇ تنزيل البيانات (Excel)</button>
  </footer>
 </main>
 
@@ -285,40 +283,9 @@ function reset() {
   scrollTo(0, 0);
 }
 
-async function downloadXlsx() {
-  const b = $('#xlsBtn');
-  if (NOT_SET) return alert('لم تُضبط إعدادات Firebase بعد.');
-  b.disabled = true; b.textContent = 'جارٍ التجهيز...';
-  try {
-    if (!window.XLSX) await new Promise((ok, no) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-      s.onload = ok; s.onerror = no; document.head.appendChild(s);
-    });
-    const { db, getDocs, query, collection, orderBy } = await getFb();
-    const snap = await getDocs(query(collection(db, COLL), orderBy('clientTime')));
-    const fmt = iso => { const d = new Date(iso);
-      return isNaN(d) ? '' : d.toLocaleString('en-GB', { timeZone: 'Asia/Muscat', hour12: false }).replace(',', ''); };
-    const rows = [['تاريخ الإرسال', 'رقم الإرسال', 'اسم المُعبّئ', 'الدائرة', 'الاتجاه الاستراتيجي', 'عنوان المبادرة', 'نطاق المبادرة', 'تفاصيل المبادرة']];
-    const docs = snap.docs.map(d => d.data())
-      .sort((a, b) => (a.clientTime || '').localeCompare(b.clientTime || '') || (a.order || 0) - (b.order || 0));
-    docs.forEach(r => rows.push([fmt(r.clientTime), r.submissionId, r.name, r.department, r.direction, r.title, r.scope, r.details]));
-    const res = { rows };
-    const ws = XLSX.utils.aoa_to_sheet(res.rows);
-    ws['!cols'] = [18, 16, 22, 28, 34, 40, 14, 60].map(w => ({ wch: w }));
-    ws['!views'] = [{ RTL: true }];
-    const wb = XLSX.utils.book_new();
-    wb.Workbook = { Views: [{ RTL: true }] };
-    XLSX.utils.book_append_sheet(wb, ws, 'المبادرات');
-    XLSX.writeFile(wb, 'مبادرات_الدوائر_' + new Date().toISOString().slice(0, 10) + '.xlsx');
-  } catch (e) { alert('تعذّر تنزيل البيانات.'); }
-  b.disabled = false; b.textContent = '⬇ تنزيل البيانات (Excel)';
-}
-
 $('#addBtn').onclick = () => { const n = addInit(); save(); n.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 $('#sendBtn').onclick = send;
 $('#againBtn').onclick = reset;
-$('#xlsBtn').onclick = downloadXlsx;
 document.addEventListener('input', e => { e.target.classList.remove('invalid'); save(); });
 document.addEventListener('change', e => { e.target.classList.remove('invalid'); save(); });
 load();
