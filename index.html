@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مبادرات الدوائر</title>
+<meta name="theme-color" content="#0b3a5d">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b3a5d; --navy-2:#124c78; --teal:#1597a5; --teal-soft:#e3f4f6;
+  --bg:#f3f6f9; --card:#ffffff; --ink:#1b2733; --muted:#64748b; --line:#dbe3ea;
+  --danger:#c0392b; --ok:#13865a; --radius:14px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:'Tajawal',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 120px}
+header{background:#fff;border-bottom:4px solid var(--teal);text-align:center;padding:14px 16px 8px}
+header img{max-width:290px;width:78%;height:auto}
+.band{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:18px 16px;text-align:center}
+.band h1{margin:0;font-size:1.35rem;font-weight:800}
+.band p{margin:4px 0 0;opacity:.85;font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:16px;box-shadow:0 1px 3px rgba(11,58,93,.05)}
+.sec-title{font-weight:800;color:var(--navy);font-size:1.05rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.num{background:var(--teal);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-grid;place-items:center;font-size:.85rem;flex:none}
+label{display:block;font-weight:700;font-size:.93rem;margin:12px 0 6px}
+label .req{color:var(--danger)}
+input[type=text],select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;outline:none;transition:border-color .15s}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+.invalid{border-color:var(--danger)!important;background:#fff8f7!important}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:18px 52%,12px 52%;background-size:6px 6px;background-repeat:no-repeat;padding-left:34px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{font:inherit;font-weight:700;padding:11px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.seg.invalid button{border-color:var(--danger)}
+.init{border-right:5px solid var(--teal)}
+.init-head{display:flex;justify-content:space-between;align-items:center}
+.del{font:inherit;font-size:.85rem;border:0;background:#fdecea;color:var(--danger);border-radius:8px;padding:6px 10px;cursor:pointer}
+.add{width:100%;margin-top:14px;font:inherit;font-weight:800;font-size:1rem;padding:14px;border-radius:var(--radius);border:2px dashed var(--teal);background:var(--teal-soft);color:var(--navy);cursor:pointer}
+.bar{position:fixed;inset:auto 0 0 0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.bar-in{max-width:720px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.count{font-size:.88rem;color:var(--muted);white-space:nowrap}
+.send{flex:1;font:inherit;font-weight:800;font-size:1.05rem;padding:14px;border:0;border-radius:12px;background:var(--navy);color:#fff;cursor:pointer}
+.send:disabled{opacity:.6}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.92rem;display:none}
+.msg.err{display:block;background:#fdecea;color:var(--danger)}
+.done{text-align:center;padding:32px 16px}
+.done .tick{width:72px;height:72px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;margin:0 auto 12px;font-size:2.2rem}
+.done h2{color:var(--navy);margin:0 0 6px}
+.done .again{margin-top:18px;font:inherit;font-weight:700;padding:12px 22px;border-radius:10px;border:0;background:var(--teal);color:#fff;cursor:pointer}
+footer{text-align:center;margin-top:28px;font-size:.85rem;color:var(--muted)}
+footer button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;padding:7px 12px;cursor:pointer;margin-top:8px}
+.hint{font-size:.82rem;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header><img src="logo.png" alt="وزارة الصحة - المديرية العامة للخدمات الصحية بمحافظة شمال الشرقية"></header>
+<div class="band">
+  <h1>استمارة مبادرات الدوائر</h1>
+  <p>اختر الدائرة ثم أضف مبادرة أو أكثر</p>
+</div>
+
+<main class="wrap">
+ <div id="formView">
+  <section class="card">
+    <h2 class="sec-title"><span class="num">١</span>الدائرة</h2>
+    <label for="dept">اختر الدائرة <span class="req">*</span></label>
+    <select id="dept"><option value="">— اختر —</option></select>
+  </section>
+
+  <div id="list"></div>
+  <button type="button" class="add" id="addBtn">+ إضافة مبادرة أخرى</button>
+
+  <section class="card">
+    <h2 class="sec-title"><span class="num">٣</span>بيانات المُعبّئ</h2>
+    <label for="name">الاسم <span class="req">*</span></label>
+    <input type="text" id="name" autocomplete="name" placeholder="اسم من قام بتعبئة الاستمارة">
+    <div class="msg" id="msg"></div>
+  </section>
+ </div>
+
+ <section class="card done hidden" id="doneView">
+   <div class="tick">✓</div>
+   <h2>تم الإرسال بنجاح</h2>
+   <p id="doneText"></p>
+   <button class="again" id="againBtn">تعبئة استمارة جديدة</button>
+ </section>
+
+ <footer>
+   دائرة التخطيط والتنظيم الصحي — المديرية العامة للخدمات الصحية بمحافظة شمال الشرقية
+   <br><button type="button" id="xlsBtn">⬇ تنزيل البيانات (Excel)</button>
+ </footer>
+</main>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <span class="count" id="count">مبادرة واحدة</span>
+    <button class="send" id="sendBtn">إرسال</button>
+  </div>
+</div>
+
+<template id="tpl">
+  <section class="card init">
+    <div class="init-head">
+      <h2 class="sec-title"><span class="num">٢</span><span class="lbl">المبادرة</span></h2>
+      <button type="button" class="del">حذف</button>
+    </div>
+    <label>الاتجاه الاستراتيجي للمديرية <span class="req">*</span></label>
+    <select class="f-dir"><option value="">— اختر —</option></select>
+    <label>عنوان المبادرة <span class="req">*</span></label>
+    <input type="text" class="f-title" placeholder="اكتب عنوان المبادرة">
+    <label>نطاق المبادرة <span class="req">*</span></label>
+    <div class="seg f-scope">
+      <button type="button" data-v="داخل المحافظة">داخل المحافظة</button>
+      <button type="button" data-v="وطنية">وطنية</button>
+    </div>
+    <label>تفاصيل أخرى للمبادرة</label>
+    <textarea class="f-details" placeholder="مثل: ما تحقق، الفئة المستهدفة، الشركاء، المؤشرات..."></textarea>
+  </section>
+</template>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, collection, doc, writeBatch, getDocs, query, orderBy, serverTimestamp }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* ========= الإعداد: الصق هنا إعدادات مشروع Firebase ========= */
+const firebaseConfig = {
+  apiKey: "PASTE_HERE",
+  authDomain: "PASTE_HERE",
+  projectId: "PASTE_HERE",
+  storageBucket: "PASTE_HERE",
+  messagingSenderId: "PASTE_HERE",
+  appId: "PASTE_HERE"
+};
+/* ============================================================== */
+const COLL = 'initiatives';
+const NOT_SET = firebaseConfig.projectId.startsWith('PASTE');
+const db = NOT_SET ? null : getFirestore(initializeApp(firebaseConfig));
+
+const DEPARTMENTS = [
+  'دائرة مراقبة الأمراض والوقاية منها','دائرة الخدمات الصحية والبرامج','دائرة صحة المرأة والطفل',
+  'التجمع الصحي الأول','التجمع الصحي الثاني','التجمع الصحي الثالث','مستشفى إبراء','مستشفى سناو',
+  'دائرة التخطيط والتنظيم الصحي','دائرة تقنية المعلومات','دائرة الموارد البشرية',
+  'دائرة الشؤون المالية','دائرة الخدمات المساندة'
+];
+const DIRECTIONS = [
+  'تعزيز الصحة العامة والوقائية للمجتمع','تحسين تجربة المريض','تجويد الخدمات',
+  'رفع كفاءة وكفاية الموارد البشرية','تعزيز وتحقيق التوسعة الشاملة للخدمات الصحية'
+];
+const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const $ = s => document.querySelector(s);
+const list = $('#list'), tpl = $('#tpl');
+const DRAFT_KEY = 'initiatives-draft-v1';
+
+DEPARTMENTS.forEach(d => $('#dept').add(new Option(d, d)));
+
+function addInit(data = {}) {
+  const node = tpl.content.firstElementChild.cloneNode(true);
+  const dir = node.querySelector('.f-dir');
+  DIRECTIONS.forEach((d, i) => dir.add(new Option(AR(i + 1) + '. ' + d, d)));
+  dir.value = data.direction || '';
+  node.querySelector('.f-title').value = data.title || '';
+  node.querySelector('.f-details').value = data.details || '';
+  node.querySelectorAll('.f-scope button').forEach(b => {
+    if (b.dataset.v === data.scope) b.classList.add('on');
+    b.onclick = () => {
+      b.parentNode.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on'); b.parentNode.classList.remove('invalid'); save();
+    };
+  });
+  node.querySelector('.del').onclick = () => {
+    const filled = node.querySelector('.f-title').value || node.querySelector('.f-details').value;
+    if (filled && !confirm('حذف هذه المبادرة؟')) return;
+    node.remove(); renumber(); save();
+  };
+  list.appendChild(node);
+  renumber();
+  return node;
+}
+
+function renumber() {
+  const cards = [...list.children];
+  cards.forEach((c, i) => {
+    c.querySelector('.lbl').textContent = 'المبادرة ' + AR(i + 1);
+    c.querySelector('.del').classList.toggle('hidden', cards.length === 1);
+  });
+  const n = cards.length;
+  $('#count').textContent = n === 1 ? 'مبادرة واحدة' : n === 2 ? 'مبادرتان' : AR(n) + (n <= 10 ? ' مبادرات' : ' مبادرة');
+}
+
+function collect() {
+  return {
+    department: $('#dept').value,
+    name: $('#name').value.trim(),
+    initiatives: [...list.children].map(c => ({
+      direction: c.querySelector('.f-dir').value,
+      title: c.querySelector('.f-title').value.trim(),
+      scope: (c.querySelector('.f-scope .on') || {}).dataset?.v || '',
+      details: c.querySelector('.f-details').value.trim()
+    }))
+  };
+}
+
+function save() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collect())); } catch (e) {} }
+function load() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (e) {}
+  if (d && d.initiatives && d.initiatives.length) {
+    $('#dept').value = d.department || ''; $('#name').value = d.name || '';
+    d.initiatives.forEach(addInit);
+  } else addInit();
+}
+
+function validate() {
+  document.querySelectorAll('.invalid').forEach(e => e.classList.remove('invalid'));
+  let first = null;
+  const mark = el => { el.classList.add('invalid'); first = first || el; };
+  if (!$('#dept').value) mark($('#dept'));
+  [...list.children].forEach(c => {
+    if (!c.querySelector('.f-dir').value) mark(c.querySelector('.f-dir'));
+    if (!c.querySelector('.f-title').value.trim()) mark(c.querySelector('.f-title'));
+    if (!c.querySelector('.f-scope .on')) mark(c.querySelector('.f-scope'));
+  });
+  if (!$('#name').value.trim()) mark($('#name'));
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return !first;
+}
+
+function showErr(t) { const m = $('#msg'); m.textContent = t; m.className = 'msg err'; }
+
+async function send() {
+  $('#msg').className = 'msg';
+  if (!validate()) return showErr('يرجى تعبئة الحقول المطلوبة المظللة باللون الأحمر.');
+  if (NOT_SET) return showErr('لم تُضبط إعدادات Firebase بعد (firebaseConfig).');
+  const data = collect(), btn = $('#sendBtn');
+  btn.disabled = true; btn.textContent = 'جارٍ الإرسال...';
+  try {
+    const now = new Date();
+    const subId = 'S-' + now.toISOString().replace(/\D/g, '').slice(2, 14) + '-' + Math.random().toString(36).slice(2, 6);
+    const batch = writeBatch(db);
+    data.initiatives.forEach((it, i) => {
+      batch.set(doc(collection(db, COLL)), {
+        submissionId: subId, order: i + 1,
+        name: data.name, department: data.department,
+        direction: it.direction, title: it.title, scope: it.scope, details: it.details,
+        clientTime: now.toISOString(), createdAt: serverTimestamp()
+      });
+    });
+    await Promise.race([
+      batch.commit(),
+      new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 15000))
+    ]);
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+    $('#doneText').textContent = 'تم حفظ ' + (data.initiatives.length === 1 ? 'مبادرة واحدة' : AR(data.initiatives.length) + ' مبادرات')
+      + ' لـ ' + data.department + '. شكراً ' + data.name + '.';
+    $('#formView').classList.add('hidden'); $('#bar').classList.add('hidden'); $('#addBtn').classList.add('hidden');
+    $('#doneView').classList.remove('hidden'); scrollTo(0, 0);
+  } catch (e) {
+    showErr('تعذّر الإرسال. تأكد من الاتصال بالإنترنت ثم حاول مرة أخرى. بياناتك محفوظة على هذا الجهاز.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'إرسال';
+  }
+}
+
+function reset() {
+  const dept = $('#dept').value, name = $('#name').value;
+  list.innerHTML = ''; addInit(); $('#dept').value = dept; $('#name').value = name;
+  $('#doneView').classList.add('hidden');
+  ['#formView', '#bar', '#addBtn'].forEach(s => $(s).classList.remove('hidden'));
+  scrollTo(0, 0);
+}
+
+async function downloadXlsx() {
+  const b = $('#xlsBtn');
+  if (NOT_SET) return alert('لم تُضبط إعدادات Firebase بعد.');
+  b.disabled = true; b.textContent = 'جارٍ التجهيز...';
+  try {
+    if (!window.XLSX) await new Promise((ok, no) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = ok; s.onerror = no; document.head.appendChild(s);
+    });
+    const snap = await getDocs(query(collection(db, COLL), orderBy('clientTime')));
+    const fmt = iso => { const d = new Date(iso);
+      return isNaN(d) ? '' : d.toLocaleString('en-GB', { timeZone: 'Asia/Muscat', hour12: false }).replace(',', ''); };
+    const rows = [['تاريخ الإرسال', 'رقم الإرسال', 'اسم المُعبّئ', 'الدائرة', 'الاتجاه الاستراتيجي', 'عنوان المبادرة', 'نطاق المبادرة', 'تفاصيل المبادرة']];
+    const docs = snap.docs.map(d => d.data())
+      .sort((a, b) => (a.clientTime || '').localeCompare(b.clientTime || '') || (a.order || 0) - (b.order || 0));
+    docs.forEach(r => rows.push([fmt(r.clientTime), r.submissionId, r.name, r.department, r.direction, r.title, r.scope, r.details]));
+    const res = { rows };
+    const ws = XLSX.utils.aoa_to_sheet(res.rows);
+    ws['!cols'] = [18, 16, 22, 28, 34, 40, 14, 60].map(w => ({ wch: w }));
+    ws['!views'] = [{ RTL: true }];
+    const wb = XLSX.utils.book_new();
+    wb.Workbook = { Views: [{ RTL: true }] };
+    XLSX.utils.book_append_sheet(wb, ws, 'المبادرات');
+    XLSX.writeFile(wb, 'مبادرات_الدوائر_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+  } catch (e) { alert('تعذّر تنزيل البيانات.'); }
+  b.disabled = false; b.textContent = '⬇ تنزيل البيانات (Excel)';
+}
+
+$('#addBtn').onclick = () => { const n = addInit(); save(); n.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+$('#sendBtn').onclick = send;
+$('#againBtn').onclick = reset;
+$('#xlsBtn').onclick = downloadXlsx;
+document.addEventListener('input', e => { e.target.classList.remove('invalid'); save(); });
+document.addEventListener('change', e => { e.target.classList.remove('invalid'); save(); });
+load();
+</script>
+</body>
+</html>
