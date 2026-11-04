@@ -55,6 +55,8 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--teal);flex:none;m
 .xl:disabled{opacity:.5}
 .msg{padding:12px;border-radius:10px;background:#fdecea;color:var(--danger);margin-top:14px}
 .muted{color:var(--muted);text-align:center;padding:20px}
+.del{font:inherit;font-size:.8rem;font-weight:700;border:0;background:#fdecea;color:var(--danger);border-radius:8px;padding:6px 10px;cursor:pointer;flex:none}
+.del:disabled{opacity:.5}
 .ref{font:inherit;font-size:.85rem;border:0;background:none;color:var(--navy);cursor:pointer;text-decoration:underline}
 @media(max-width:480px){.stat .n{font-size:1.35rem}}
 </style>
@@ -182,6 +184,7 @@ function render() {
             ${r.details ? `<div class="det">${esc(r.details)}</div>` : ''}
             <div class="by">${esc(r.name)} · ${fmt(r.clientTime)}</div>
           </label>
+          <button class="del" data-del="${r.id}" aria-label="حذف المبادرة">حذف</button>
         </div>`).join('')}</div>
     </section>`;
   }).join('') || '<p class="muted">لا توجد مبادرات مطابقة.</p>';
@@ -206,7 +209,22 @@ $('#list').addEventListener('change', e => {
   }
   updateBar();
 });
-$('#list').addEventListener('click', e => {
+$('#list').addEventListener('click', async e => {
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    const r = rows.find(x => x.id === del.dataset.del);
+    if (!r || !confirm('حذف المبادرة نهائياً؟\n\n«' + r.title + '»\n' + r.department + '\n\nلا يمكن التراجع عن الحذف.')) return;
+    del.disabled = true; del.textContent = '...';
+    try {
+      await fs.deleteDoc(fs.doc(fs.db, COLL, r.id));
+      rows = rows.filter(x => x.id !== r.id); selected.delete(r.id);
+      stats(); render();
+    } catch (err) {
+      alert('تعذّر الحذف (' + (err.code || err.message) + '). تأكد من نشر قواعد Firestore الجديدة.');
+      del.disabled = false; del.textContent = 'حذف';
+    }
+    return;
+  }
   const h = e.target.closest('.dept-h');
   if (h && !e.target.classList.contains('dchk') && !h.parentNode.classList.contains('empty')) h.parentNode.classList.toggle('closed');
 });
