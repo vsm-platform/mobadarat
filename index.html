@@ -127,23 +127,29 @@ footer button{font:inherit;font-size:.85rem;border:1px solid var(--line);backgro
 </template>
 
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getFirestore, collection, doc, writeBatch, getDocs, query, orderBy, serverTimestamp }
-  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 /* ========= الإعداد: الصق هنا إعدادات مشروع Firebase ========= */
 const firebaseConfig = {
-  apiKey: "PASTE_HERE",
-  authDomain: "PASTE_HERE",
-  projectId: "PASTE_HERE",
-  storageBucket: "PASTE_HERE",
-  messagingSenderId: "PASTE_HERE",
-  appId: "PASTE_HERE"
+  apiKey: "AIzaSyDTdZ5ya_XP_0wyJoR_LGC8frL8f3eG22o",
+  authDomain: "mobadarat-e33ac.firebaseapp.com",
+  projectId: "mobadarat-e33ac",
+  storageBucket: "mobadarat-e33ac.firebasestorage.app",
+  messagingSenderId: "81815678002",
+  appId: "1:81815678002:web:f303acea4b21dd4cfca02b"
 };
 /* ============================================================== */
 const COLL = 'initiatives';
-const NOT_SET = firebaseConfig.projectId.startsWith('PASTE');
-const db = NOT_SET ? null : getFirestore(initializeApp(firebaseConfig));
+const NOT_SET = firebaseConfig.apiKey.startsWith('PASTE');
+const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
+let fb = null;            // تحميل Firebase في الخلفية دون تعطيل ظهور الاستمارة
+async function getFb() {
+  if (fb) return fb;
+  const [{ initializeApp }, fs] = await Promise.all([
+    import(SDK + 'firebase-app.js'), import(SDK + 'firebase-firestore.js')]);
+  fb = { ...fs, db: fs.getFirestore(initializeApp(firebaseConfig)) };
+  return fb;
+}
+if (!NOT_SET) getFb().catch(() => {});
 
 const DEPARTMENTS = [
   'دائرة مراقبة الأمراض والوقاية منها','دائرة الخدمات الصحية والبرامج','دائرة صحة المرأة والطفل',
@@ -245,6 +251,7 @@ async function send() {
   try {
     const now = new Date();
     const subId = 'S-' + now.toISOString().replace(/\D/g, '').slice(2, 14) + '-' + Math.random().toString(36).slice(2, 6);
+    const { db, writeBatch, doc, collection, serverTimestamp } = await getFb();
     const batch = writeBatch(db);
     data.initiatives.forEach((it, i) => {
       batch.set(doc(collection(db, COLL)), {
@@ -288,6 +295,7 @@ async function downloadXlsx() {
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
       s.onload = ok; s.onerror = no; document.head.appendChild(s);
     });
+    const { db, getDocs, query, collection, orderBy } = await getFb();
     const snap = await getDocs(query(collection(db, COLL), orderBy('clientTime')));
     const fmt = iso => { const d = new Date(iso);
       return isNaN(d) ? '' : d.toLocaleString('en-GB', { timeZone: 'Asia/Muscat', hour12: false }).replace(',', ''); };
